@@ -1,0 +1,14 @@
+{
+  "url": {
+    "name": "Algorithm server address",
+    "name_zh": "算法服务器地址",
+    "description": "Algorithm server address",
+    "description_zh": "算法服务器地址",
+    "attribute": "required",
+    "type": "string",
+    "default": "http://server:port",
+    "valid": {
+      "length": 255
+    }
+  }
+}
