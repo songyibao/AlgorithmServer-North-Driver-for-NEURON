@@ -8,6 +8,7 @@
 size_t on_response_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
     neu_plugin_t *plugin = (neu_plugin_t *) userdata;
+    plugin->common.link_state = NEU_NODE_LINK_STATE_CONNECTED;
     plog_debug(plugin, "http请求结束回调函数");
     return size * nmemb;
 }
@@ -15,10 +16,10 @@ size_t on_response_callback(char *ptr, size_t size, size_t nmemb, void *userdata
 void send_post_request(const char *url, const char *json_data, size_t (*callback)(char *, size_t, size_t, void *),
                        void *arg)
 {
+    neu_plugin_t *plugin = (neu_plugin_t *) arg;
     CURL    *curl;
     CURLcode res;
     curl = curl_easy_init();
-
     if (curl) {
         struct curl_slist *headers = NULL;
         headers                    = curl_slist_append(headers, "Content-Type: application/json");
@@ -35,14 +36,13 @@ void send_post_request(const char *url, const char *json_data, size_t (*callback
         res = curl_easy_perform(curl);
         curl_slist_free_all(headers);
 
-        printf("已发送HTTP POST请求\n");
-        printf("错误码: %s\n", curl_easy_strerror(res));
         if (res != CURLE_OK) {
-            printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            plugin->common.link_state = NEU_NODE_LINK_STATE_DISCONNECTED;
+            plog_debug(plugin,"请求错误: %s\n", curl_easy_strerror(res));
         }
 
         curl_easy_cleanup(curl);
     } else {
-        printf("Failed to initialize curl\n");
+        plog_debug(plugin,"Failed to initialize curl\n");
     }
 }
