@@ -5,12 +5,27 @@
 
 #include "../algorithm.h"
 #include <curl/curl.h>
+#include "../utils/utils.h"
 size_t on_response_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
     neu_plugin_t *plugin = (neu_plugin_t *) userdata;
     plugin->common.link_state = NEU_NODE_LINK_STATE_CONNECTED;
-    plog_debug(plugin,"http请求结束回调函数");
     plog_debug(plugin,"算法服务器返回数据: %s",ptr);
+    float in_float = strtof(ptr,NULL);
+    if(in_float==0){
+        plog_error(plugin,"算法服务器反馈数据异常");
+        return size * nmemb;
+    }
+    if(ab_write_float(plugin,plugin->plc_val_address,in_float)!=0){
+        plog_error(plugin,"控制失败");
+        return size * nmemb;
+    }
+    float out_float = ab_read_float(plugin,plugin->plc_val_address);
+    if(in_float == out_float){
+        plog_debug(plugin,"控制成功");
+    }else{
+        plog_error(plugin,"控制失败");
+    }
     return size * nmemb;
 }
 // 发送HTTP POST请求的函数，包括URL, JSON数据和回调函数

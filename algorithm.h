@@ -10,6 +10,10 @@ struct neu_plugin {
 
     // url 由host和port组成，例如：http://host:port
     char url[255];
+    // plc 地址
+    char host[16];
+    // plc内部字段地址
+    char plc_val_address[30];
     // 插件连接状态
     bool connected;
     // 插件启动状态

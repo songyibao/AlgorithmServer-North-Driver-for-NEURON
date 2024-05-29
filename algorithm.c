@@ -72,10 +72,23 @@ static int driver_config(neu_plugin_t *plugin, const char *setting)
     char *err_param = NULL;
 
     neu_json_elem_t url = { .name = "url", .t = NEU_JSON_STR, .v.val_str = NULL };
-
-    ret = neu_parse_param((char *) setting, &err_param, 1, &url);
-
+    neu_json_elem_t host           = { .name = "host", .t = NEU_JSON_STR, .v.val_str = NULL };
+    neu_json_elem_t address           = { .name = "address", .t = NEU_JSON_STR, .v.val_str = NULL };
+    ret = neu_parse_param((char *) setting, &err_param, 3, &url,&host,&address);
+    if (ret != 0) {
+        plog_error(plugin, "config: %s, decode error: %s", setting, err_param);
+        free(err_param);
+        if (host.v.val_str != NULL) {
+            free(host.v.val_str);
+        }
+        return -1;
+    }
     strcpy(plugin->url, url.v.val_str);
+    free(url.v.val_str);
+    strcpy(plugin->host, host.v.val_str);
+    free(host.v.val_str);
+    strcpy(plugin->plc_val_address, address.v.val_str);
+    free(address.v.val_str);
     plog_notice(plugin, "config: url: %s", plugin->url);
     return 0;
 }

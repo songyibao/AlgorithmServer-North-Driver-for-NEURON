@@ -28,4 +28,4 @@ target_include_directories(plugin-algorithm PRIVATE
 )
 
 target_link_libraries(plugin-algorithm PRIVATE z ev)
-target_link_libraries(plugin-algorithm PRIVATE /usr/local/lib/neuron/libneuron-base.so curl)
+target_link_libraries(plugin-algorithm PRIVATE /usr/local/lib/neuron/libneuron-base.so curl plctag)
