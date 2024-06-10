@@ -33,12 +33,13 @@ int transform(neu_plugin_t *plugin, char *input_json_str, char **output_json_str
         for (index = 2; index < tags_size && (value = json_array_get(tags_array, index)); index++) {
             json_t *real_value = json_object_get(value, "value");
             // 小数保留两位
-            json_real_set(real_value, (round(json_real_value(real_value) * 1000000)) / 1000000);
+            json_real_set(real_value, (round(json_real_value(real_value) * 10)) / 10);
 
             if (json_is_real(real_value) || json_is_integer(real_value)) {
                 json_array_append_new(res_arr, real_value);
             }
         }
+        // 7个保留位
         for (int i = 0; i < 7; i++) {
             json_t *real_value = json_real(0);
             json_array_append_new(res_arr, real_value);
