@@ -6,7 +6,7 @@
     "description_zh": "算法服务器地址",
     "attribute": "required",
     "type": "string",
-    "default": "http://server:port",
+    "default": "http://192.168.5.11:5000/post",
     "valid": {
       "length": 255
     }
