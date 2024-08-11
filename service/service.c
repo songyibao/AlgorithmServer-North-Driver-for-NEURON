@@ -78,6 +78,9 @@ int handle_trans_data(neu_plugin_t *plugin, neu_reqresp_head_t *head, neu_reqres
         plog_notice(plugin, "parse json failed");
         return -1;
     }
+    if(resp.tags!=NULL){
+        free(resp.tags);
+    }
     //    plog_debug(plugin, "parse json str succeed: %s", json_str);
 
     int res = transform(plugin, json_str, &transformed_str);
